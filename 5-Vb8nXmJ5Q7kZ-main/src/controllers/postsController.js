@@ -1,4 +1,4 @@
-import {getTodosPosts, criarPost, atualizarPost} from "../models/postsModel.js";
+import {getTodosPosts, criarPost, atualizarPost, apagarPost} from "../models/postsModel.js";
 import fs from "fs";
 import gerarDescricaoComGemini from "../services/geminiService.js"
 
@@ -58,3 +58,45 @@ export async function atualizarNovoPost(req, res) {
         res.status(500).json({"Erro":"Falha na requisição"});
     }
 }
+
+export async function deletarPost(req, res) {
+    const postId = req.params.id;
+    try{
+        const deletedPost = await apagarPost(postId);
+        if(deletedPost){
+            res.status(200).json({message: "Foto excluída com sucesso."});
+        }else{
+            res.status(404).json({message: "Foto não encontrada. Não foi possível excluir a foto."});
+        }
+    }catch(error)
+    {
+        console.error(error);
+        res.status(500).json({message: "Erro ao excluir a foto!"});
+    }
+}
+
+
+async function deleteDocument(req, res) {
+    const id = req.params.id;
+  
+    // ... validações básicas ...
+  
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection('posts');
+  
+      // Verificar se o documento existe antes de deletar
+      const existingDocument = await collection.findOne({ _id: ObjectId(id) });
+  
+      if (!existingDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+  
+      const result = await collection.deleteOne({ _id: ObjectId(id) });
+  
+      // ... restante do código ...
+    } catch (error) {
+      // ... tratamento de erros ...
+    }
+  }
