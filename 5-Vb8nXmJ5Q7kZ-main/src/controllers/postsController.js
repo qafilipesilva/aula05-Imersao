@@ -74,3 +74,29 @@ export async function deletarPost(req, res) {
         res.status(500).json({message: "Erro ao excluir a foto!"});
     }
 }
+
+
+async function deleteDocument(req, res) {
+    const id = req.params.id;
+  
+    // ... validações básicas ...
+  
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection('posts');
+  
+      // Verificar se o documento existe antes de deletar
+      const existingDocument = await collection.findOne({ _id: ObjectId(id) });
+  
+      if (!existingDocument) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+  
+      const result = await collection.deleteOne({ _id: ObjectId(id) });
+  
+      // ... restante do código ...
+    } catch (error) {
+      // ... tratamento de erros ...
+    }
+  }
