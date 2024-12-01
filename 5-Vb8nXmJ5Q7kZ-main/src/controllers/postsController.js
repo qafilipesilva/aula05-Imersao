@@ -1,4 +1,4 @@
-import {getTodosPosts, criarPost, atualizarPost} from "../models/postsModel.js";
+import {getTodosPosts, criarPost, atualizarPost, apagarPost} from "../models/postsModel.js";
 import fs from "fs";
 import gerarDescricaoComGemini from "../services/geminiService.js"
 
@@ -56,5 +56,21 @@ export async function atualizarNovoPost(req, res) {
     } catch(erro) {
         console.error(erro.message);
         res.status(500).json({"Erro":"Falha na requisição"});
+    }
+}
+
+export async function deletarPost(req, res) {
+    const postId = req.params.id;
+    try{
+        const deletedPost = await apagarPost(postId);
+        if(deletedPost){
+            res.status(200).json({message: "Foto excluída com sucesso."});
+        }else{
+            res.status(404).json({message: "Foto não encontrada. Não foi possível excluir a foto."});
+        }
+    }catch(error)
+    {
+        console.error(error);
+        res.status(500).json({message: "Erro ao excluir a foto!"});
     }
 }

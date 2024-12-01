@@ -26,3 +26,15 @@ export async function atualizarPost(id, novoPost) {
     const objID = ObjectId.createFromHexString(id);
     return colecao.updateOne({_id: new ObjectId(objID)}, {$set:novoPost});
 }
+
+
+
+export async function apagarPost(id) {
+    const db = conexao.db("imersao-instabytes");
+    const colecao = db.collection("posts");
+    const objID = ObjectId.createFromHexString(id);
+  //  const ObjectId = require('mongodb').ObjectId; //Importar ObjectId
+    return colecao.deleteOne({ _id: new ObjectId(objID) });
+}
+
+
